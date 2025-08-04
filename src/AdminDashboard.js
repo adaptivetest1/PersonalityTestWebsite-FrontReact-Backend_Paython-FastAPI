@@ -138,7 +138,7 @@ const AdminDashboard = () => {
   const handleExport = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/admin/export', {
+      const response = await fetch(`${BACKEND_URL}/admin/export`, {
         headers: {
           'Admin-Token': token,
         },
