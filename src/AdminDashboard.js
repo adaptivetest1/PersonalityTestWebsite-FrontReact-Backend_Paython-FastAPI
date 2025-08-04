@@ -15,7 +15,9 @@ import { Bar, Pie, Line } from 'react-chartjs-2';
 import './AdminDashboard.css';
 
 // Use the same backend URL as the main app
-const BACKEND_URL = '/api';
+const BACKEND_URL = process.env.NODE_ENV === 'production' 
+  ? (process.env.REACT_APP_API_URL || 'https://personalitytest-personality-test-backend.hf.space')
+  : 'http://localhost:8889';
 
 // Register Chart.js components
 ChartJS.register(
