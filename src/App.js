@@ -4,8 +4,8 @@ import './App.css';
 
 // Use environment variable for backend URL or fallback to localhost
 const BACKEND_URL = process.env.NODE_ENV === 'production' 
-  ? (process.env.REACT_APP_API_URL || 'https://your-backend-domain.hf.space/api')
-  : 'http://localhost:8889/api';
+  ? (process.env.REACT_APP_API_URL || 'https://personalitytest-personality-test-backend.hf.space')
+  : 'http://localhost:8889';
 
 function App() {
   const [currentStep, setCurrentStep] = useState('welcome'); // welcome, test, report, admin
