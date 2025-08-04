@@ -163,7 +163,7 @@ const AdminDashboard = () => {
   const testConnection = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/admin/test', {
+      const response = await fetch(`${BACKEND_URL}/admin/test`, {
         headers: {
           'Admin-Token': token,
         },
