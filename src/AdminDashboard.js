@@ -16,8 +16,8 @@ import './AdminDashboard.css';
 
 // Use the same backend URL as the main app
 const BACKEND_URL = process.env.NODE_ENV === 'production' 
-  ? (process.env.REACT_APP_API_URL || 'https://personalitytest-personality-test-backend.hf.space')
-  : 'http://localhost:8889';
+  ? (process.env.REACT_APP_API_URL || 'https://personalitytest-personality-test-backend.hf.space/api')
+  : 'http://localhost:8889/api';
 
 // Register Chart.js components
 ChartJS.register(
@@ -48,8 +48,11 @@ const AdminDashboard = () => {
     const token = localStorage.getItem('adminToken');
     if (token) {
       setIsAuthenticated(true);
-      fetchDashboardData();
-      fetchParticipants();
+      // Add delay to ensure backend is ready
+      setTimeout(() => {
+        fetchDashboardData();
+        fetchParticipants();
+      }, 1000);
     }
   }, [currentPage, searchTerm]);
 
@@ -87,7 +90,13 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const token = localStorage.getItem('adminToken');
+      if (!token) {
+        console.log('No admin token found');
+        return;
+      }
+      
       console.log('Fetching dashboard data...');
+      console.log('Backend URL:', BACKEND_URL);
       
       const response = await fetch(`${BACKEND_URL}/admin/dashboard`, {
         headers: {
@@ -104,7 +113,12 @@ const AdminDashboard = () => {
       } else {
         const errorText = await response.text();
         console.error('Dashboard error response:', errorText);
-        setError('خطأ في جلب بيانات الداشبورد: ' + response.status);
+        // Check if response is HTML (which means wrong endpoint)
+        if (errorText.includes('<!doctype') || errorText.includes('<html')) {
+          setError('خطأ في الاتصال: تأكد من عنوان الـ backend');
+        } else {
+          setError('خطأ في جلب بيانات الداشبورد: ' + response.status);
+        }
       }
     } catch (err) {
       console.error('Dashboard fetch error:', err);
@@ -138,7 +152,7 @@ const AdminDashboard = () => {
   const handleExport = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/admin/export', {
+      const response = await fetch(`${BACKEND_URL}/admin/export`, {
         headers: {
           'Admin-Token': token,
         },
@@ -163,7 +177,7 @@ const AdminDashboard = () => {
   const testConnection = async () => {
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/admin/test', {
+      const response = await fetch(`${BACKEND_URL}/admin/test`, {
         headers: {
           'Admin-Token': token,
         },
